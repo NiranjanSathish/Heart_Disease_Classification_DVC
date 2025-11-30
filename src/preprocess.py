@@ -16,7 +16,7 @@ print(f"Original dataset shape: {df.shape}")
 # Remove duplicates
 df = df.drop_duplicates()
 
-# NEW: Remove outliers using IQR method
+# Remove outliers using IQR method
 print("\n=== Removing Outliers ===")
 numerical_cols = ['age', 'trtbps', 'chol', 'thalachh', 'oldpeak']
 
@@ -33,6 +33,27 @@ for col in numerical_cols:
     print(f"{col}: Removed {before - after} outliers")
 
 print(f"Dataset shape after outlier removal: {df.shape}")
+
+# NEW: Feature Engineering
+print("\n=== Creating New Features ===")
+
+# Age groups
+df['age_group'] = pd.cut(df['age'], bins=[0, 40, 55, 70, 100], labels=[0, 1, 2, 3])
+
+# Cholesterol risk (high if > 240)
+df['high_chol'] = (df['chol'] > 240).astype(int)
+
+# Blood pressure risk (high if > 140)
+df['high_bp'] = (df['trtbps'] > 140).astype(int)
+
+# Heart rate reserve
+df['hr_reserve'] = df['thalachh'] - df['age']
+
+# Combined risk score
+df['risk_score'] = df['high_chol'] + df['high_bp'] + (df['oldpeak'] > 1).astype(int)
+
+print(f"Added 5 new features")
+print(f"Final dataset shape: {df.shape}")
 
 # Separate features and target
 X = df.drop('output', axis=1)
