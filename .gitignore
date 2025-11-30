@@ -1,2 +1,21 @@
-.venv/
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
 DVCLab.venv/
+
+# # DVC
+# /data/raw/*
+# /data/processed/*
+# /models/*
+# !.gitkeep
+
+# OS
+.DS_Store
+
+# Google Cloud
+mlops-lab-dvc-53ebe6e70d48.json
