@@ -11,12 +11,28 @@ with open('params.yaml', 'r') as f:
 # Load raw data
 print("Loading raw data...")
 df = pd.read_csv('data/raw/heart.csv')
-print(f"Dataset shape: {df.shape}")
-print(f"Missing values:\n{df.isnull().sum()}")
+print(f"Original dataset shape: {df.shape}")
 
-# Check for duplicates
-print(f"Duplicate rows: {df.duplicated().sum()}")
+# Remove duplicates
 df = df.drop_duplicates()
+
+# NEW: Remove outliers using IQR method
+print("\n=== Removing Outliers ===")
+numerical_cols = ['age', 'trtbps', 'chol', 'thalachh', 'oldpeak']
+
+for col in numerical_cols:
+    Q1 = df[col].quantile(0.25)
+    Q3 = df[col].quantile(0.75)
+    IQR = Q3 - Q1
+    lower_bound = Q1 - 1.5 * IQR
+    upper_bound = Q3 + 1.5 * IQR
+    
+    before = len(df)
+    df = df[(df[col] >= lower_bound) & (df[col] <= upper_bound)]
+    after = len(df)
+    print(f"{col}: Removed {before - after} outliers")
+
+print(f"Dataset shape after outlier removal: {df.shape}")
 
 # Separate features and target
 X = df.drop('output', axis=1)
@@ -47,6 +63,6 @@ X_test_scaled.to_csv('data/processed/X_test.csv', index=False)
 y_train.to_csv('data/processed/y_train.csv', index=False)
 y_test.to_csv('data/processed/y_test.csv', index=False)
 
-print("Preprocessing complete!")
+print("\nPreprocessing complete!")
 print(f"Training set size: {X_train_scaled.shape[0]}")
 print(f"Test set size: {X_test_scaled.shape[0]}")
