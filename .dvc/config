@@ -1,5 +1,4 @@
 [core]
     remote = myremote
 ['remote "myremote"']
-    url = gs://mlop_lab6_bucket_1
-    credentialpath = ../mlops-lab-dvc-53ebe6e70d48.json
+    url = gs://dvc-lab-data-ns-2025
